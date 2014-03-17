@@ -233,6 +233,7 @@ declare module TSM {
         static shortMix(q1: quat, q2: quat, time: number, dest?: quat): quat;
         static mix(q1: quat, q2: quat, time: number, dest?: quat): quat;
         static fromAxis(axis: TSM.vec3, angle: number, dest?: quat): quat;
+        static fromRotationMatrix(m: TSM.mat4, dest?: quat): quat;
         static identity: quat;
     }
 }

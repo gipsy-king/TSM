@@ -2876,6 +2876,48 @@ var TSM;
             return dest;
         };
 
+        quat.fromRotationMatrix = function (m, dest) {
+            if (typeof dest === "undefined") { dest = null; }
+            if (!dest)
+                dest = new quat();
+
+            // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+            // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
+            var te = m.all(), m11 = te[0], m12 = te[4], m13 = te[8], m21 = te[1], m22 = te[5], m23 = te[9], m31 = te[2], m32 = te[6], m33 = te[10], trace = m11 + m22 + m33, s;
+
+            if (trace > 0) {
+                s = 0.5 / Math.sqrt(trace + 1.0);
+
+                dest.w = 0.25 / s;
+                dest.x = (m32 - m23) * s;
+                dest.y = (m13 - m31) * s;
+                dest.z = (m21 - m12) * s;
+            } else if (m11 > m22 && m11 > m33) {
+                s = 2.0 * Math.sqrt(1.0 + m11 - m22 - m33);
+
+                dest.w = (m32 - m23) / s;
+                dest.x = 0.25 * s;
+                dest.y = (m12 + m21) / s;
+                dest.z = (m13 + m31) / s;
+            } else if (m22 > m33) {
+                s = 2.0 * Math.sqrt(1.0 + m22 - m11 - m33);
+
+                dest.w = (m13 - m31) / s;
+                dest.x = (m12 + m21) / s;
+                dest.y = 0.25 * s;
+                dest.z = (m23 + m32) / s;
+            } else {
+                s = 2.0 * Math.sqrt(1.0 + m33 - m11 - m22);
+
+                dest.w = (m21 - m12) / s;
+                dest.x = (m13 + m31) / s;
+                dest.y = (m23 + m32) / s;
+                dest.z = 0.25 * s;
+            }
+
+            return dest;
+        };
+
         quat.identity = new quat().setIdentity();
         return quat;
     })();
